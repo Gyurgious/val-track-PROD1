@@ -1,0 +1,46 @@
+
+
+
+.player-card {
+    border-radius: 50%;
+    width: 200px;
+}
+
+.overview-section {
+    background-color: rgb(21, 30, 65);
+    color: white;
+}
+
+
+.basic-info {
+    display: grid;
+    place-items: center;
+    margin-left: 20px;
+}
+
+.player-name {
+    font-size: 30px;
+    font-weight: 400;
+}
+
+.mmr-info {
+    padding:10px;
+    text-align: center;
+    margin-left: 20px;
+    border-radius: 20px;
+    background-color: rgb(35, 50, 109);
+    
+}
+
+.comp-info {
+    width:90%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.match-card {
+    background-color: rgb(35, 50, 109);
+    border-radius: 20px;
+    padding: 5px;
+    margin: 0 auto 10px;
+}

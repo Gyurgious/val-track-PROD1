@@ -1,0 +1,27 @@
+
+/* Reset default margins and paddings */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Ensure body takes up full height */
+body, html {
+  height: 100%;
+}
+
+/* Basic container styling */
+.app-container {
+  min-height: 100vh; /* Full height of the viewport */
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: flex-start; /* Align to the top */
+  background-color: #121212; /* Dark background */
+}
+
+.test {
+  color: white;
+  font-size: 2rem;
+  text-align: center;
+}
