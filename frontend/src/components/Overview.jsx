@@ -19,9 +19,12 @@ export const Overview =() => {
     const username = query_user.substring(0, tagIndex);
     console.log(username);
 
-    const [playerData, setPlayerData] = useState(null);
+    const [userData, setUserData] = useState(null);
     const [mmrData, setmmrData] = useState(null);
     const [playerMatches, setPlayerMatches] = useState([]);
+
+    const [match, setMatch] = useState(null);
+    const [players, setPlayers] = useState([]);
 
 
 
@@ -47,15 +50,22 @@ export const Overview =() => {
            
           });
 
-            console.log(response3.data);
+          const response4 = await axios.get("http://127.0.0.1:8000/api/cur_match", {
+            params: { user: username, tag:playerTag }, 
+           
+          });
+
+            // console.log(response3.data);
             
 
-            setPlayerData(response.data);
+            setUserData(response.data);
             setmmrData(response2.data);
             setPlayerMatches(response3.data.data);
 
+      
 
-            console.log(playerMatches[0].metadata.map);
+            console.log(playerMatches[0].players.all_players)
+
 
 
           } catch (error) {
@@ -67,15 +77,16 @@ export const Overview =() => {
     }, []);
     
 
+    
 
     return <div className="overview-section">
-            {playerData ? (
+            {userData ? (
                 <div>
                     <div className="basic-info">
                       <h2>Player Info</h2>
-                      <img src={playerData.data.card.small} className="player-card"/>
-                      <p className="player-name">Name: {playerData.data.name}</p>
-                      <p className="player-level">Account Level: {playerData.data.account_level}</p>
+                      <img src={userData.data.card.small} className="player-card"/>
+                      <p className="player-name">Name: {userData.data.name}</p>
+                      <p className="player-level">Account Level: {userData.data.account_level}</p>
                     </div>
 
                     <div className="comp-info">
@@ -94,6 +105,8 @@ export const Overview =() => {
                             <h3> Matches: {match.metadata.map}</h3>
                             <h3> Date: {match.metadata.game_start_patched} </h3>
                             <h3> Mode: {match.metadata.mode} </h3>
+                            <h3> Team: {match.players.all_players[1].team}</h3>
+                            <h3> Result: {match.teams.red.rounds_won} - {match.teams.blue.rounds_won}</h3>
                             
                           </div>
                         ))}

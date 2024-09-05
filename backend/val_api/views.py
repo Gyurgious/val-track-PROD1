@@ -83,3 +83,22 @@ def get_match_hist(request):
         return JsonResponse(response.json())
     except requests.exceptions.RequestException as e:
         return JsonResponse({"error": str(e)}, status=response.status_code)
+    
+
+def get_match_data(request):
+    match_id = "abf21ba9-40b0-4a61-b799-90e923b3957e"
+
+    match_data = "https://api.henrikdev.xyz/valorant/v4/match/na/abf21ba9-40b0-4a61-b799-90e923b3957e"
+    
+    headers = {
+        'Authorization': API_KEY,
+    }
+
+    try:
+        response = requests.get(match_data, headers=headers)
+        response.raise_for_status()
+        return JsonResponse(response.json())
+    except requests.exceptions.RequestException as e:
+        return JsonResponse({"error": str(e)}, status=response.status_code)
+
+
