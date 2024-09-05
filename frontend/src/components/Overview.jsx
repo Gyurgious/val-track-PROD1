@@ -20,6 +20,7 @@ export const Overview =() => {
     console.log(username);
 
     const [userData, setUserData] = useState(null);
+    const [user, setUser] = useState();
     const [mmrData, setmmrData] = useState(null);
     const [playerMatches, setPlayerMatches] = useState([]);
 
@@ -47,7 +48,7 @@ export const Overview =() => {
 
           const response3 = await axios.get("http://127.0.0.1:8000/api/matches", {
             params: { user: username, tag:playerTag }, 
-           
+            
           });
 
           const response4 = await axios.get("http://127.0.0.1:8000/api/cur_match", {
@@ -55,17 +56,18 @@ export const Overview =() => {
            
           });
 
-            // console.log(response3.data);
+            console.log(response3.data);
             
 
-            setUserData(response.data);
-            setmmrData(response2.data);
-            setPlayerMatches(response3.data.data);
+            setUserData(response.data); // set basic user data
+            setmmrData(response2.data);  // MMR data
+            setPlayerMatches(response3.data.data); // match history data
+
+            // console.log(userData.data.name)
+            setUser(response.data.data.name) // set user to username of player
 
       
-
-            console.log(playerMatches[0].players.all_players)
-
+            // set user team -> if user's team has won, output won-lost(score) Else(team lost), output lost-won(score) 
 
 
           } catch (error) {
@@ -76,8 +78,8 @@ export const Overview =() => {
         fetchData();
     }, []);
     
-
     
+
 
     return <div className="overview-section">
             {userData ? (
@@ -100,16 +102,59 @@ export const Overview =() => {
 
 
                       <div className="match-hist">
-                        {playerMatches.map((match)  => (
+                        {playerMatches.map((match)  => {
+                          let userTeam = null;
+                          let userTeamWon = false;
+
+                          match.players.all_players.forEach((player) => {
+                            if (player.name === user) {
+                              userTeam = player.team; // This will be either "Red" or "Blue"
+                            }
+                          });
+                          
+
+                          // check if user team has won
+                          if (userTeam == "Red") {
+                              userTeamWon = match.teams.red.has_won;
+                          }
+
+                          else if (userTeam == "Blue") {
+                            userTeamWon = match.teams.blue.has_won;
+                          }
+
+                          // Get the rounds won and lost for the user's team
+                          const userRoundsWon = userTeam === "Red" ? match.teams.red.rounds_won : match.teams.blue.rounds_won;
+                          const opponentRoundsWon = userTeam === "Red" ? match.teams.blue.rounds_won : match.teams.red.rounds_won;
+
+                          return (
                           <div key={match.id} className="match-card">
                             <h3> Matches: {match.metadata.map}</h3>
                             <h3> Date: {match.metadata.game_start_patched} </h3>
                             <h3> Mode: {match.metadata.mode} </h3>
-                            <h3> Team: {match.players.all_players[1].team}</h3>
-                            <h3> Result: {match.teams.red.rounds_won} - {match.teams.blue.rounds_won}</h3>
-                            
+                            <h3> Team: {userTeam}</h3>
+                            <h3>Result: {userRoundsWon} - {opponentRoundsWon} </h3>
+
+                            <div> 
+                              {match.players.all_players.map((player, playerIndex) => { // player list
+                              
+                                if (player.name == user) {
+                                  return (
+                                    <div key={playerIndex}>
+                                      <p> Player: {player.name} </p>
+                                      <p>Team: {player.team}</p>
+    
+                                    </div>
+                                  )
+                                }
+                                
+                               
+                                })}
+
+
+                            </div>                  
                           </div>
-                        ))}
+                          );
+                        })}
                       </div>
 
                     </div>
