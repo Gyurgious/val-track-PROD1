@@ -23,7 +23,7 @@ export const Overview =() => {
     const [user, setUser] = useState();
     const [mmrData, setmmrData] = useState(null);
     const [playerMatches, setPlayerMatches] = useState([]);
-
+    
     const [match, setMatch] = useState(null);
     const [players, setPlayers] = useState([]);
 
@@ -33,30 +33,35 @@ export const Overview =() => {
     useEffect(() => {
         const fetchData = async () => {
           try {
-            const response = await axios.get("http://127.0.0.1:8000/api/overview", { 
-              params: {
-                user: username, // Ensure the user is correctly formatted
-                tag:playerTag,
-              }
-            });
+            const[response, response2, response3, response4] = await Promise.all ([
+                axios.get("http://127.0.0.1:8000/api/overview", { 
+                params: {
+                  user: username, // Ensure the user is correctly formatted
+                  tag:playerTag,
+                }
+              }),
+  
+                axios.get("http://127.0.0.1:8000/api/mmr", {
+                  params: { 
+                    user: username, tag:playerTag }, 
+                
+              }),
+    
+                axios.get("http://127.0.0.1:8000/api/matches", {
+                  params: { user: username, tag:playerTag }, 
+                  
+                }),
+      
 
-            const response2 = await axios.get("http://127.0.0.1:8000/api/mmr", {
-              params: { 
-                user: username, tag:playerTag }, 
-             
-          });
+                axios.get("http://127.0.0.1:8000/api/get-data", {
+                  params: { user: username, tag:playerTag }, 
+                
+                }),
 
-          const response3 = await axios.get("http://127.0.0.1:8000/api/matches", {
-            params: { user: username, tag:playerTag }, 
+            ]);
             
-          });
 
-          const response4 = await axios.get("http://127.0.0.1:8000/api/cur_match", {
-            params: { user: username, tag:playerTag }, 
-           
-          });
-
-            console.log(response3.data);
+            console.log(response4.data);
             
 
             setUserData(response.data); // set basic user data
@@ -138,10 +143,13 @@ export const Overview =() => {
                               {match.players.all_players.map((player, playerIndex) => { // player list
                               
                                 if (player.name == user) {
+                                  let KD_ratio = player.stats.kills/player.stats.deaths;
+                                  KD_ratio = KD_ratio.toFixed(2);
+
                                   return (
                                     <div key={playerIndex}>
-                                      <p> Player: {player.name} </p>
-                                      <p>Team: {player.team}</p>
+                                      <p> K/D Ratio: {KD_ratio}</p>
+                                      <p> K/D/A: {player.stats.kills}/{player.stats.deaths}/{player.stats.assists} </p>
     
                                     </div>
                                   )
