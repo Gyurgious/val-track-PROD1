@@ -118,9 +118,13 @@ def get_processed_data(request):
         processed_data = []
 
         for match in match_data['data']:
+            user_map = match['metadata']['map']
+            user_mode = match['metadata']['mode']
+            user_match_start = match['metadata']['game_start_patched'] # fix time(late by 6 hours)
             user_team = None
             user_rounds_won = 0
             opponent_rounds_won = 0
+
 
 
             for player in match['players']['all_players']:
@@ -138,13 +142,15 @@ def get_processed_data(request):
                     opponent_rounds_won = match['teams']['red']['rounds_won']
 
                 processed_data.append({
-                    'result': f"{user_rounds_won} - {opponent_rounds_won }"
+                    'score': f"{user_rounds_won} - {opponent_rounds_won }",
+                    'team': user_team,
+                    'map': user_map,
+                    'time_start': user_match_start,
+                    'mode': user_mode
 
                 })
 
-            print(processed_data)
-
-        return JsonResponse({'matches': processed_data}, safe=False)
+        return JsonResponse({'data': processed_data}, safe=False)
         
     except requests.exceptions.RequestException as e:
         return JsonResponse({"error": str(e)}, status=response.status_code)
