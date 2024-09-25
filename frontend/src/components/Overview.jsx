@@ -23,6 +23,7 @@ export const Overview =() => {
     const [user, setUser] = useState();
     const [mmrData, setmmrData] = useState(null);
     const [playerMatches, setPlayerMatches] = useState([]);
+    const [results, setResults] = useState([]);
     
     const [match, setMatch] = useState(null);
     const [players, setPlayers] = useState([]);
@@ -48,33 +49,31 @@ export const Overview =() => {
               }),
     
                 axios.get("http://127.0.0.1:8000/api/matches", {
-                  params: { user: username, tag:playerTag }, 
-                  
+                  params: { user: username, tag:playerTag },                 
                 }),
       
 
                 axios.get("http://127.0.0.1:8000/api/get-data", {
                   params: { user: username, tag:playerTag }, 
-                
                 }),
 
             ]);
             
 
+            console.log(response3.data);
             console.log(response4.data);
+            
             
 
             setUserData(response.data); // set basic user data
             setmmrData(response2.data);  // MMR data
-            setPlayerMatches(response3.data.data); // match history data
+            setPlayerMatches(response4.data.data); // match history data
+            // setResults(response4.data.data);
+
+
 
             // console.log(userData.data.name)
             setUser(response.data.data.name) // set user to username of player
-
-      
-            // set user team -> if user's team has won, output won-lost(score) Else(team lost), output lost-won(score) 
-
-
           } catch (error) {
             console.error('Error fetching data:', error);
           }
@@ -108,74 +107,24 @@ export const Overview =() => {
 
                       <div className="match-hist">
                         {playerMatches.map((match)  => {
-                          let userTeam = null;
-                          let userTeamWon = false;
-
-                          match.players.all_players.forEach((player) => {
-                            if (player.name === user) {
-                              userTeam = player.team; // This will be either "Red" or "Blue"
-                            }
-                          });
+                          
                           
 
-                          // check if user team has won
-                          if (userTeam == "Red") {
-                              userTeamWon = match.teams.red.has_won;
-                          }
-
-                          else if (userTeam == "Blue") {
-                            userTeamWon = match.teams.blue.has_won;
-                          }
-
-                          // Get the rounds won and lost for the user's team
-                          const userRoundsWon = userTeam === "Red" ? match.teams.red.rounds_won : match.teams.blue.rounds_won;
-                          const opponentRoundsWon = userTeam === "Red" ? match.teams.blue.rounds_won : match.teams.red.rounds_won;
-
+                          
                           return (
-                          <div key={match.id} className="match-card">
-                            <h3> Matches: {match.metadata.map}</h3>
-                            <h3> Date: {match.metadata.game_start_patched} </h3>
-                            <h3> Mode: {match.metadata.mode} </h3>
-                            <h3> Team: {userTeam}</h3>
-                            <h3>Result: {userRoundsWon} - {opponentRoundsWon} </h3>
+                          <div key={match.map} className="match-card">
+                            <h3> Matches: {match.map}</h3>
+                            <h3> Date: {match.time_start} </h3>
+                            <h3> Mode: {match.mode} </h3>
+                        
 
-                            <div> 
-                              {match.players.all_players.map((player, playerIndex) => { // player list
-                              
-                                if (player.name == user) {
-                                  let KD_ratio = player.stats.kills/player.stats.deaths;
-                                  KD_ratio = KD_ratio.toFixed(2);
-
-                                  return (
-                                    <div key={playerIndex}>
-                                      <p> K/D Ratio: {KD_ratio}</p>
-                                      <p> K/D/A: {player.stats.kills}/{player.stats.deaths}/{player.stats.assists} </p>
-    
-                                    </div>
-                                  )
-                                }
-                                
-                               
-                                })}
-
-
-                            </div>                  
+                                           
                           </div>
                           );
                         })}
                       </div>
 
-                    </div>
-                  
-
-                    
-
-            
-                    
-
-                
-                    
-                   
+                    </div>  
                 </div>
             ) : (
                 <p>Loading...</p>
