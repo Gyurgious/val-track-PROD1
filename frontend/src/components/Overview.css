@@ -11,12 +11,16 @@
     color: white;
 }
 
+.match-hist {
+    margin-right:200px;
+}
 
 .basic-info {
     display: grid;
     place-items: center;
     margin-left: 20px;
 }
+
 
 .player-name {
     font-size: 30px;
@@ -39,8 +43,33 @@
 }
 
 .match-card {
-    background-color: rgb(35, 50, 109);
-    border-radius: 20px;
-    padding: 5px;
-    margin: 0 auto 10px;
+    border: 1px solid rgb(35, 50, 109); /* Border around the card */
+    border-radius: 8px; /* Rounded corners */
+    padding: 10px; /* Inner spacing */
+    margin: 10px; /* Outer spacing */
+    display: flex; /* Use flexbox for layout */
+    background-color: rgb(35, 50, 109); /* Background color */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Shadow effect */
+    padding-right:200px;
+}
+
+.player-agent {
+    flex: 0 0 30%; /* Take up 30% of the width */
+    border: 1px solid black; /* Optional: Keep for debugging */
+    text-align: center; 
+    padding: 10px; /* Add padding for better spacing */
+}
+
+.player-stats {
+    flex: 1; /* Allow stats section to take up remaining space */
+    display: flex; 
+    flex-direction: column; /* Stack stats vertically */
+    padding: 10px; /* Optional: Add padding for better spacing */
+    box-sizing: border-box; /* Include padding in the width */
+}
+
+
+.agent-pic {
+    width:150px;
+    height: auto;
 }

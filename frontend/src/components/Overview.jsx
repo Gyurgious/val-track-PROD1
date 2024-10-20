@@ -113,16 +113,25 @@ export const Overview =() => {
                           
                           return (
                           <div key={match.map} className="match-card">
-                            <h3> Matches: {match.map}</h3>
-                            <h3> Date: {match.time_start} </h3>
-                            <h3> Mode: {match.mode} </h3>
-                        
+                            <div className="player-agent"> 
+                              <img src= {match.Omen} className="agent-pic" alt="omenpic"/>
+                              <h3> Agent: {match.agent}</h3>
+                            </div>
+
+                            <div className="player-stats">
+                              <h3> Map: {match.map}</h3>
+                              <h3> Date: {match.time_start}</h3>
+                              <h3> Mode: {match.mode} </h3>
+                              <h3> Result: {match.score}</h3>
+                              <p> Headshot Percentage: {match.headshot_percentage}%</p>
+
+                             </div>
 
                                            
                           </div>
                           );
                         })}
-                      </div>
+                      </div> 
 
                     </div>  
                 </div>
