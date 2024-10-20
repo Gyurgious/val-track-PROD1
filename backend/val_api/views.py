@@ -21,6 +21,7 @@ load_dotenv()
 API_KEY = os.getenv("API_KEY")
 
 
+
 def get_account_data(request):
     user = request.GET.get('user', '')
     tag = request.GET.get('tag', '')
@@ -100,6 +101,7 @@ def get_match_data(request):
         return JsonResponse({"error": str(e)}, status=response.status_code)
     
 
+
 def get_processed_data(request):
     user = request.GET.get('user', '')
     tag = request.GET.get('tag', '')
@@ -115,7 +117,10 @@ def get_processed_data(request):
         response.raise_for_status()
         match_data = response.json()
 
+
+      
         processed_data = []
+        charac = "./photos/omen-1.png"
 
         for match in match_data['data']:
             user_map = match['metadata']['map']
@@ -130,6 +135,17 @@ def get_processed_data(request):
             for player in match['players']['all_players']:
                 if player['name'] == user:
                     user_team = player['team']
+                    user_kills = player['stats']['kills']
+                    user_assists = player['stats']['assists']
+                    user_deaths = player['stats']['deaths']
+                    user_agent = player['character']
+                    user_hs = player['stats']['headshots']
+                    user_bs = player['stats']['bodyshots']
+                    user_ls = player['stats']['legshots']
+
+                    user_total_shots = user_hs + user_bs + user_ls
+                    user_hs_percentage = round(user_hs/user_total_shots, 2) * 100
+                    
                     print(user_team)
                     break;
     
@@ -146,8 +162,11 @@ def get_processed_data(request):
                     'team': user_team,
                     'map': user_map,
                     'time_start': user_match_start,
-                    'mode': user_mode
-
+                    'mode': user_mode,
+                    'kills': user_kills,
+                    'headshot_percentage': user_hs_percentage,
+                    'agent': user_agent,
+                    'Omen': "/agent-photos/omen-1.png"
                 })
 
         return JsonResponse({'data': processed_data}, safe=False)
