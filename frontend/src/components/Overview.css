@@ -15,6 +15,12 @@
     margin-right:200px;
 }
 
+.avg-stats-info {
+    border-top: 5px solid rgb(21, 30, 65);
+    margin-top: 100px;
+    padding-top: 20px;
+}
+
 .basic-info {
     display: grid;
     place-items: center;
@@ -56,6 +62,7 @@
 .player-agent {
     flex: 0 0 30%; /* Take up 30% of the width */
     border: 1px solid black; /* Optional: Keep for debugging */
+    background-color: rgb(20, 33, 83);
     text-align: center; 
     padding: 10px; /* Add padding for better spacing */
 }

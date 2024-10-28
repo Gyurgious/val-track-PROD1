@@ -9,4 +9,5 @@ urlpatterns = [
     path('matches', views.get_match_hist, name="hist"),
     path('cur_match', views.get_match_data, name="match"),
     path('get-data', views.get_processed_data, name='data'),
+    path('avg_data', views.get_avg_data, name="avg"),
 ]

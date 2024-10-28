@@ -23,10 +23,8 @@ export const Overview =() => {
     const [user, setUser] = useState();
     const [mmrData, setmmrData] = useState(null);
     const [playerMatches, setPlayerMatches] = useState([]);
+    const [playerStats, setPlayerStats] = useState(null);
     const [results, setResults] = useState([]);
-    
-    const [match, setMatch] = useState(null);
-    const [players, setPlayers] = useState([]);
 
 
 
@@ -34,7 +32,7 @@ export const Overview =() => {
     useEffect(() => {
         const fetchData = async () => {
           try {
-            const[response, response2, response3, response4] = await Promise.all ([
+            const[response, response2, response3, response4, response5] = await Promise.all ([
                 axios.get("http://127.0.0.1:8000/api/overview", { 
                 params: {
                   user: username, // Ensure the user is correctly formatted
@@ -57,17 +55,24 @@ export const Overview =() => {
                   params: { user: username, tag:playerTag }, 
                 }),
 
+                axios.get("http://127.0.0.1:8000/api/avg_data", {
+                  params: { user: username, tag:playerTag }, 
+                }),
+
             ]);
             
-
+            
+            console.log(response2.data);
             console.log(response3.data);
             console.log(response4.data);
+            console.log(response5.data);
             
             
 
             setUserData(response.data); // set basic user data
             setmmrData(response2.data);  // MMR data
             setPlayerMatches(response4.data.data); // match history data
+            setPlayerStats(response5.data);
             // setResults(response4.data.data);
 
 
@@ -102,7 +107,18 @@ export const Overview =() => {
                         <img src={mmrData.data.current_data.images.small} />
                         <h2>Peak Rank: {mmrData.data.highest_rank.patched_tier}</h2>
                         <h3>Season: {mmrData.data.highest_rank.season}</h3>
+    
+
+                        <div className="avg-stats-info">
+                            <h2> HS: {playerStats.user_hs}%</h2>
+                            <h2> Winrate: {playerStats.user_wr}%</h2>
+                            <h2> K/D: {playerStats.user_kd} </h2>
+
+                           
+                        </div>
                       </div>
+
+
 
 
                       <div className="match-hist">
@@ -123,6 +139,7 @@ export const Overview =() => {
                               <h3> Date: {match.time_start}</h3>
                               <h3> Mode: {match.mode} </h3>
                               <h3> Result: {match.score}</h3>
+                              <p> KDA: {match.kills}/{match.deaths}/{match.assists}</p>
                               <p> Headshot Percentage: {match.headshot_percentage}%</p>
 
                              </div>
