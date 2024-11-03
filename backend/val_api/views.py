@@ -120,6 +120,7 @@ def get_processed_data(request):
 
       
         processed_data = []
+        round_data = []
         charac = "./photos/omen-1.png"
 
 

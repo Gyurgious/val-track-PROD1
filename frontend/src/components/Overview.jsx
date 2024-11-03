@@ -144,6 +144,12 @@ export const Overview =() => {
 
                              </div>
 
+                             <div className="analyze-button"> 
+                              <h2>Analyze Match</h2>
+
+
+                             </div>
+
                                            
                           </div>
                           );

@@ -49,6 +49,7 @@
 }
 
 .match-card {
+    position: relative;
     border: 1px solid rgb(35, 50, 109); /* Border around the card */
     border-radius: 8px; /* Rounded corners */
     padding: 10px; /* Inner spacing */
@@ -79,4 +80,24 @@
 .agent-pic {
     width:150px;
     height: auto;
+}
+
+.analyze-button {
+    position: absolute;
+    background-color: black;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    padding: 15px 15px;
+    border-radius: 15px;
+    height: 18px;
+
+    right: 10px;
+    bottom: 20px;
+    transition: background-color 0.3s ease;
+}
+
+
+.analyze-button:hover {
+    background-color: rgb(40, 37, 37);
 }
