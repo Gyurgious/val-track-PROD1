@@ -12,7 +12,31 @@ load_dotenv()
 API_KEY = os.getenv("API_KEY")
 
 
-def get_death_location(player, match, cur_round): # get death location of defenders trying to take site
+def get_attacker_location(player, match, cur_round): # get location of attackers that won post-plant
+    combat_data = match['kills']
+    
+
+    for kills in combat_data:
+        victim = kills['victim_display_name']
+        killer = kills['killer_display_name']
+        locations = kills['player_locations_on_kill']
+
+        if (cur_round-1 == kills['round']):
+            if (victim == player):
+                # print(f"cur round is {cur_round} and victim is {victim}. killer is {killer}")
+                for sigma in locations:
+                    if (sigma['player_display_name'] == killer): # show location of attacker in sucessful position
+                        x_loc = sigma['location']['x']
+                        y_loc = sigma['location']['y']
+                        if x_loc is not None and y_loc is not None:
+                            return {
+                                'attacker': killer,
+                                'locations': {'x': x_loc, 'y': y_loc}
+                            }
+                    
+    return None # if no defenders are eliminated during this round.
+
+def get_attacker_location_lost(player, match, cur_round): # get location of attackers that lost post-plant
     combat_data = match['kills']
     
 
@@ -24,12 +48,15 @@ def get_death_location(player, match, cur_round): # get death location of defend
         if (cur_round-1 == kills['round']):
             if (victim == player):
                 print(f"cur round is {cur_round} and victim is {victim}. killer is {killer}")
-                for sigma in locations:
-                    if (sigma['player_display_name'] == killer):
-                        x_loc = sigma['location']['x']
-                        y_loc = sigma['location']['y']
-                        print(f"{x_loc}, {y_loc}")
-           
+                x_loc = kills['victim_death_location']['x']
+                y_loc = kills['victim_death_location']['y']
+                if x_loc is not None and y_loc is not None:
+                    return {
+                        'attacker': victim,
+                        'locations': {'x': x_loc, 'y': y_loc}
+                    }
+                    
+    return None # if no attackers are eliminated during this round.
 
 
 
@@ -55,7 +82,7 @@ def get_processed_data(user, tag):
 
       
         processed_data = []
-        round_data = []
+        round_info = []
         charac = "./photos/omen-1.png"
 
 
@@ -75,9 +102,6 @@ def get_processed_data(user, tag):
             user_match_start = match['metadata']['game_start_patched'] # fix time(late by 6 hours)
 
 
-            victim = combat_data[0]['victim_display_name']
-            print(f"bozo is {victim}")
-
           
             user_team = None
             user_rounds_won = 0
@@ -95,26 +119,47 @@ def get_processed_data(user, tag):
 
                 attacker_alive = 0
                 defender_alive = 0
+
+               
                 if round['bomb_planted'] == True: # post-plant
+                    bomb_site = round['plant_events']['plant_site']
+                    bomb_location = round['plant_events']['plant_location']
+                    round_info.append({
+                        "round": cur_round,
+                        "map": user_map,
+                        "bomb_site": bomb_site,
+                        "plant_location": bomb_location,
+                        "attacker_positions": [],
+                        "outcome": "win" if not round['bomb_defused'] else "loss"
+                    })
+
+                     # track attacker position during post-plant
                     for player in round['plant_events']['player_locations_on_plant']:
                         player_name = player['player_display_name']
+            
 
 
                         if player['player_team'] == attack_team:
                             attacker_alive += 1
-                            print("current round is " + str(cur_round) + " " + player_name)
+                            if round['bomb_defused'] == True: # lost post-plant
+                                bad_loc = get_attacker_location_lost(player_name, match, cur_round)
+                                round_info[-1]['attacker_positions'].append(bad_loc)
                 
                         else:
                             defender_alive += 1
-                            get_death_location(player_name, match, cur_round)
+                            if round['bomb_defused'] == False: # won post-plant
+                                good_loc = get_attacker_location(player_name, match, cur_round) 
+                                round_info[-1]['attacker_positions'].append(good_loc)
 
                     print(f"attackers: {attacker_alive} defenders: {defender_alive}")
                     if (round['bomb_defused'] == False):
                         print("Won postplant")
                     else:
                         print("Loss postplant")
+
+                        
                     
-            
+            print(round_info)
                     
        
 
